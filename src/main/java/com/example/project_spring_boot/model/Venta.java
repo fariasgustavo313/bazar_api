@@ -22,6 +22,9 @@ public class Venta {
     private Long id;
     private LocalDate fecha_venta;
     private double total;
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Producto> productos;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_cliente", referencedColumnName = "id")
     private Cliente cliente;
 }
