@@ -25,8 +25,8 @@ public class VentaService {
         ventaRepository.save(venta);
     }
 
-    public void eliminarVenta(Venta venta){
-        ventaRepository.delete(venta);
+    public void eliminarVenta(Long id){
+        ventaRepository.deleteById(id);
     }
 
     public void editarVenta(Long id, Venta venta){
