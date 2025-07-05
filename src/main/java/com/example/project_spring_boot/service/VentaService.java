@@ -94,4 +94,9 @@ public class VentaService {
         ventaExistente.setTotal(total);
         ventaRepository.save(ventaExistente);
     }
+
+    public List<Producto> obtenerProductosDeVenta(Long id_venta) {
+        Venta venta = ventaRepository.findById(id_venta).orElseThrow(() -> new RuntimeException("Venta no encontrado con ID: " + id_venta));
+        return venta.getProductos();
+    }
 }
