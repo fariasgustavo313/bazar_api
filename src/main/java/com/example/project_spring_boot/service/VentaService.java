@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -98,5 +100,22 @@ public class VentaService {
     public List<Producto> obtenerProductosDeVenta(Long id_venta) {
         Venta venta = ventaRepository.findById(id_venta).orElseThrow(() -> new RuntimeException("Venta no encontrado con ID: " + id_venta));
         return venta.getProductos();
+    }
+
+    public Map<String, Object> obtenerResumenVentasPorFecha(LocalDate fechaVenta) {
+        List<Venta> ventas = ventaRepository.findAll()
+                .stream()
+                .filter(venta -> venta.getFecha_venta().equals(fechaVenta))
+                .toList();
+
+        double sumaTotal = ventas.stream().mapToDouble(Venta::getTotal).sum();
+        int cantidadVentas = ventas.size();
+
+        Map<String, Object> respuesta = new HashMap<>();
+        respuesta.put("fecha_venta", fechaVenta);
+        respuesta.put("cantidad_ventas", cantidadVentas);
+        respuesta.put("total", sumaTotal);
+
+        return respuesta;
     }
 }

@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("ventas")
@@ -49,5 +52,16 @@ public class VentaController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(productos);
+    }
+
+    @GetMapping("/resumen/{fecha_venta}")
+    public ResponseEntity<?> obtenerResumenVentasPorFecha(@PathVariable String fecha_venta){
+        try {
+            LocalDate fecha = LocalDate.parse(fecha_venta);
+            Map<String, Object> resumen = ventaService.obtenerResumenVentasPorFecha(fecha);
+            return ResponseEntity.ok(resumen);
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.badRequest().body("Formato de fecha invalido. Utilizar yyy-MM-dd");
+        }
     }
 }
