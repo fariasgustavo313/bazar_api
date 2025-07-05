@@ -2,6 +2,7 @@ package com.example.project_spring_boot.controller;
 
 import com.example.project_spring_boot.model.Cliente;
 import com.example.project_spring_boot.service.ClienteService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,20 +28,21 @@ public class ClienteController {
     }
 
     @PostMapping
-    public ResponseEntity<Cliente> crearCliente(@RequestBody Cliente cliente){
+    public ResponseEntity<Cliente> crearCliente(@Valid @RequestBody Cliente cliente){
         clienteService.crearCliente(cliente);
         return ResponseEntity.created(URI.create("/clientes/"+cliente.getId())).body(cliente);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Cliente> eliminarCliente(@PathVariable Long id){
+    public ResponseEntity<Void> eliminarCliente(@PathVariable Long id){
         clienteService.eliminarCliente(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
-    public void actualizarCliente(@PathVariable Long id,
-                                  @RequestBody Cliente cliente){
+    public ResponseEntity<Cliente> actualizarCliente(@PathVariable Long id,
+                                  @Valid @RequestBody Cliente cliente){
         clienteService.actualizarCliente(id, cliente);
+        return ResponseEntity.ok(cliente);
     }
 }

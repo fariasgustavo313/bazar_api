@@ -22,6 +22,12 @@ public class ProductoService {
     }
 
     public void crearProducto(Producto producto) {
+        validarProducto(producto);
+
+        boolean existe = productoRepository.existsByNombreAndMarca(producto.getNombre(), producto.getMarca());
+        if (existe) {
+            throw new RuntimeException("Ya existe un producto con el mismo nombre y marca");
+        }
         productoRepository.save(producto);
     }
 
@@ -30,11 +36,32 @@ public class ProductoService {
     }
 
     public void actualizarProducto(Long id, Producto producto) {
-        Producto productoAux = productoRepository.findById(id).orElse(null);
-        productoAux.setNombre(producto.getNombre());
-        productoAux.setMarca(producto.getMarca());
-        productoAux.setCantidad_disponible(producto.getCantidad_disponible());
-        productoAux.setCosto(producto.getCosto());
-        productoRepository.save(productoAux);
+        Producto productoExistente = productoRepository.findById(id).orElseThrow(() -> new RuntimeException("El producto no existe"));
+        validarProducto(producto);
+
+        boolean existe = productoRepository.existsByNombreAndMarcaAndIdNot(producto.getNombre(), producto.getMarca(), id);
+        if (existe) {
+            throw new RuntimeException("Ya existe un producto con el mismo nombre y marca");
+        }
+        productoExistente.setNombre(producto.getNombre());
+        productoExistente.setMarca(producto.getMarca());
+        productoExistente.setCantidad_disponible(producto.getCantidad_disponible());
+        productoExistente.setCosto(producto.getCosto());
+        productoRepository.save(productoExistente);
+    }
+
+    private void validarProducto(Producto producto) {
+        if (producto.getNombre() == null || producto.getNombre().isBlank()) {
+            throw new RuntimeException("El nombre es obligatorio");
+        }
+        if (producto.getMarca() == null || producto.getMarca().isBlank()) {
+            throw new RuntimeException("La marca es obligatoria");
+        }
+        if (producto.getCosto() <= 0) {
+            throw new RuntimeException("El costo debe ser mayor a 0");
+        }
+        if (producto.getCantidad_disponible() < 0) {
+            throw new RuntimeException("La cantidad disponible no puede ser negativa");
+        }
     }
 }
