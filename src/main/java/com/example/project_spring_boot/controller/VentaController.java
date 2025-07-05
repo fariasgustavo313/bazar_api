@@ -75,4 +75,10 @@ public class VentaController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/cliente/{dni}")
+    public List<Venta> obtenerVentasPorCliente(@PathVariable String dni){
+        return ventaService.obtenerVentasPorDniCliente(dni);
+    }
+
 }

@@ -141,4 +141,8 @@ public class VentaService {
 
         return dto;
     }
+
+    public List<Venta> obtenerVentasPorDniCliente(String dni) {
+        return ventaRepository.obtenerVentasPorDniCliente(dni);
+    }
 }
