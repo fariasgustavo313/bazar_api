@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class VentaService {
@@ -29,38 +30,68 @@ public class VentaService {
     }
 
     public Venta obtenerVentasPorId(Long id){
-        return ventaRepository.findById(id).orElse(null);
+        return ventaRepository.findById(id).orElseThrow(() -> new RuntimeException("Venta no encontrada con ID: " + id));
     }
 
     public void crearVenta(Venta venta){
-        Venta ventaAux = new Venta();
-        List<Producto> productos = productoRepository.findAll();
-        List<Cliente> clientes = clienteRepository.findAll();
-        List<Producto> productosVenta = venta.getProductos();
-        double total = productosVenta.stream().mapToDouble(Producto::getCosto).sum();
+        Long clienteId = venta.getCliente().getId();
+        Cliente cliente = clienteRepository.findById(clienteId).orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID: " + clienteId));
 
-        if(!clientes.contains(venta.getCliente())){
-            throw new RuntimeException("Cliente no encontrado");
-        } else if(!productos.containsAll(productosVenta)){
-            throw new RuntimeException("Producto no encontrado");
+        List<Long> idsProductos = venta.getProductos()
+                .stream()
+                .map(Producto::getId)
+                .collect(Collectors.toList());
+
+        List<Producto> productos = productoRepository.findAllById(idsProductos);
+
+        if (productos.size() != idsProductos.size()) {
+            throw new RuntimeException("Uno o mas productos no fueron encontrados");
         }
-        ventaAux.setTotal(total);
-        ventaAux.setFecha_venta(LocalDate.now());
-        ventaAux.setCliente(venta.getCliente());
-        ventaAux.setProductos(productosVenta);
-        ventaRepository.save(ventaAux);
+
+        double total = productos.stream()
+                .mapToDouble(Producto::getCosto)
+                .sum();
+
+        venta.setCliente(cliente);
+        venta.setProductos(productos);
+        venta.setFecha_venta(LocalDate.now());
+        venta.setTotal(total);
+
+        ventaRepository.save(venta);
     }
 
     public void eliminarVenta(Long id){
+        if (!ventaRepository.existsById(id)) {
+            throw new RuntimeException("No se encontro la venta con ID: " + id);
+        }
         ventaRepository.deleteById(id);
     }
 
     public void editarVenta(Long id, Venta venta){
-        Venta ventaAux = ventaRepository.findById(id).orElse(null);
-        ventaAux.setFecha_venta(venta.getFecha_venta());
-        ventaAux.setCliente(venta.getCliente());
-        ventaAux.setProductos(venta.getProductos());
-        ventaAux.setTotal(venta.getTotal());
-        ventaRepository.save(ventaAux);
+        Venta ventaExistente = ventaRepository.findById(id).orElseThrow(() -> new RuntimeException("Venta no encontrado con ID: " + id));
+
+        Long clienteId = venta.getCliente().getId();
+        Cliente cliente = clienteRepository.findById(clienteId).orElseThrow(() -> new RuntimeException("Cliente no encontrado con ID: " + clienteId));
+
+        List<Long> idsProductos = venta.getProductos()
+                .stream()
+                .map(Producto::getId)
+                .collect(Collectors.toList());
+
+        List<Producto> productos = productoRepository.findAllById(idsProductos);
+
+        if (productos.size() != idsProductos.size()) {
+            throw new RuntimeException("Uno o mas productos no fueron encontrados");
+        }
+
+        double total = productos.stream()
+                .mapToDouble(Producto::getCosto)
+                .sum();
+
+        ventaExistente.setCliente(cliente);
+        ventaExistente.setProductos(productos);
+        ventaExistente.setFecha_venta(LocalDate.now());
+        ventaExistente.setTotal(total);
+        ventaRepository.save(ventaExistente);
     }
 }

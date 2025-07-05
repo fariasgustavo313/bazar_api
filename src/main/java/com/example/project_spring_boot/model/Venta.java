@@ -1,6 +1,7 @@
 package com.example.project_spring_boot.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,10 +21,24 @@ public class Venta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotNull(message = "La fecha de la venta es obligatoria")
     private LocalDate fecha_venta;
+
+    @NotNull(message = "El total es obligatorio")
     private double total;
-    @OneToMany(cascade = CascadeType.ALL)
+
+    @ManyToMany
+    @JoinTable(
+            name = "venta_producto",
+            joinColumns = @JoinColumn(name = "venta_id"),
+            inverseJoinColumns = @JoinColumn(name = "producto_id")
+    )
+    @NotNull(message = "Debe asociar al menor un producto a la venta")
     private List<Producto> productos;
-    @OneToOne(cascade = CascadeType.ALL)
+
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
+    @NotNull(message = "Debe asociar un cliente a la venta")
     private Cliente cliente;
 }
