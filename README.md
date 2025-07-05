@@ -46,7 +46,7 @@ Este proyecto forma parte de mi **práctica personal y portafolio como desarroll
 
 ```bash
 git clone https://github.com/fariasgustavo313/bazar_api.git
-cd bazar-api
+cd bazar_api
 ```
 
 2️⃣ **Configurar base de datos:**
@@ -73,13 +73,13 @@ o correr la aplicación desde tu IDE.
 * Construir la imagen:
 
 ```bash
-docker build -t bazar-api .
+docker build -t bazar_api .
 ```
 
 * Ejecutar el contenedor:
 
 ```bash
-docker run -p 8080:8080 bazar-api
+docker run -p 8080:8080 bazar_api
 ```
 
 ---
