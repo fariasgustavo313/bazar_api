@@ -1,5 +1,6 @@
 package com.example.project_spring_boot.service;
 
+import com.example.project_spring_boot.dto.VentaMayorDTO;
 import com.example.project_spring_boot.model.Cliente;
 import com.example.project_spring_boot.model.Producto;
 import com.example.project_spring_boot.model.Venta;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,5 +119,26 @@ public class VentaService {
         respuesta.put("total", sumaTotal);
 
         return respuesta;
+    }
+
+    public VentaMayorDTO obtenerVentaConMayorMonto() {
+        List<Venta> ventas = ventaRepository.findAll();
+
+        if (ventas.isEmpty()) {
+            throw new RuntimeException("No hay ventas registradas");
+        }
+
+        Venta ventaMax = ventas.stream()
+                .max(Comparator.comparingDouble(Venta::getTotal))
+                .orElseThrow(() -> new RuntimeException("No se pudo encontrar la venta con monto mas alto"));
+
+        VentaMayorDTO dto = new VentaMayorDTO();
+        dto.setCodigo_venta(ventaMax.getId());
+        dto.setTotal(ventaMax.getTotal());
+        dto.setCantidad_productos(ventaMax.getProductos().size());
+        dto.setNombre_cliente(ventaMax.getCliente().getNombre());
+        dto.setApellido_cliente(ventaMax.getCliente().getApellido());
+
+        return dto;
     }
 }

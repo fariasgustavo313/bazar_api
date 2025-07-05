@@ -1,5 +1,6 @@
 package com.example.project_spring_boot.controller;
 
+import com.example.project_spring_boot.dto.VentaMayorDTO;
 import com.example.project_spring_boot.model.Producto;
 import com.example.project_spring_boot.model.Venta;
 import com.example.project_spring_boot.service.VentaService;
@@ -62,6 +63,16 @@ public class VentaController {
             return ResponseEntity.ok(resumen);
         } catch (DateTimeParseException e) {
             return ResponseEntity.badRequest().body("Formato de fecha invalido. Utilizar yyy-MM-dd");
+        }
+    }
+
+    @GetMapping("/mayor_venta")
+    public ResponseEntity<?> obtenerMayorVenta() {
+        try {
+            VentaMayorDTO dto = ventaService.obtenerVentaConMayorMonto();
+            return ResponseEntity.ok(dto);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
