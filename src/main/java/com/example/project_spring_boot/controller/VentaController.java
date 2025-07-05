@@ -4,10 +4,13 @@ import com.example.project_spring_boot.dto.VentaMayorDTO;
 import com.example.project_spring_boot.model.Producto;
 import com.example.project_spring_boot.model.Venta;
 import com.example.project_spring_boot.service.VentaService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -81,4 +84,27 @@ public class VentaController {
         return ventaService.obtenerVentasPorDniCliente(dni);
     }
 
+    @GetMapping("/exportar_csv")
+    public void exportarVentasCsv(HttpServletResponse response) throws IOException {
+        response.setContentType("text/csv");
+        response.setHeader("Content-Disposition", "attachment; filename=ventas.csv");
+
+        List<Venta> ventas = ventaService.obtenerVentas();
+
+        try (PrintWriter out = response.getWriter()) {
+            out.print("ID,Fecha Venta,Total,Cliente Nombre,Cliente Apellido,Cantidad Productos");
+
+            for (Venta venta : ventas) {
+                String row = String.format("%d,%s,%.2f,%s,%d",
+                        venta.getId(),
+                        venta.getFecha_venta(),
+                        venta.getTotal(),
+                        venta.getCliente().getNombre(),
+                        venta.getCliente().getApellido(),
+                        venta.getProductos().size()
+                );
+                out.print(row);
+            }
+        }
+    }
 }
