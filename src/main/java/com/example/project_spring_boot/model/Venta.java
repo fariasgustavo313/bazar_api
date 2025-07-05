@@ -25,6 +25,5 @@ public class Venta {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Producto> productos;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_cliente", referencedColumnName = "id")
     private Cliente cliente;
 }
