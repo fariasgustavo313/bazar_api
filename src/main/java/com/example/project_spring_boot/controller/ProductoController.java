@@ -71,4 +71,11 @@ public class ProductoController {
         }
         return ResponseEntity.ok(productos);
     }
+
+    @GetMapping("/buscar")
+    public List<Producto> buscarProductos(@RequestParam(required = false) String marca,
+                                          @RequestParam(required = false) double precioMin,
+                                          @RequestParam(required = false) double precioMax) {
+        return productoService.buscarProductos(marca, precioMin, precioMax);
+    }
 }

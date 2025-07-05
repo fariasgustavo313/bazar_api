@@ -68,4 +68,8 @@ public class ProductoService {
             throw new RuntimeException("La cantidad disponible no puede ser negativa");
         }
     }
+
+    public List<Producto> buscarProductos(String marca, double precioMin, double precioMax) {
+        return productoRepository.buscarProductos(marca, precioMin, precioMax);
+    }
 }
