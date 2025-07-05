@@ -50,6 +50,10 @@ public class ProductoService {
         productoRepository.save(productoExistente);
     }
 
+    public List<Producto> obtenerProductosConStockMenosA(int cantidad) {
+        return productoRepository.findByCantidad_disponibleLessThan(cantidad);
+    }
+
     private void validarProducto(Producto producto) {
         if (producto.getNombre() == null || producto.getNombre().isBlank()) {
             throw new RuntimeException("El nombre es obligatorio");

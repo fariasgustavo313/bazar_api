@@ -62,4 +62,13 @@ public class ProductoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @GetMapping("/falta_stock/{cantidad}")
+    public ResponseEntity<List<Producto>> obtenerProductosConStockMenosA(@PathVariable int cantidad) {
+        List<Producto> productos = productoService.obtenerProductosConStockMenosA(cantidad);
+        if (productos.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(productos);
+    }
 }
