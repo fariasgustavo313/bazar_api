@@ -2,7 +2,6 @@ package com.example.project_spring_boot.service;
 
 import com.example.project_spring_boot.model.Producto;
 import com.example.project_spring_boot.repository.ProductoRepository;
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,13 +47,13 @@ public class ProductoService {
         }
         productoExistente.setNombre(producto.getNombre());
         productoExistente.setMarca(producto.getMarca());
-        productoExistente.setCantidad_disponible(producto.getCantidad_disponible());
+        productoExistente.setCantidadDisponible(producto.getCantidadDisponible());
         productoExistente.setCosto(producto.getCosto());
         productoRepository.save(productoExistente);
     }
 
     public List<Producto> obtenerProductosConStockMenosA(int cantidad) {
-        return productoRepository.findByCantidad_disponibleLessThan(cantidad);
+        return productoRepository.findByCantidadDisponibleLessThan(cantidad);
     }
 
     private void validarProducto(Producto producto) {
@@ -67,7 +66,7 @@ public class ProductoService {
         if (producto.getCosto() <= 0) {
             throw new RuntimeException("El costo debe ser mayor a 0");
         }
-        if (producto.getCantidad_disponible() < 0) {
+        if (producto.getCantidadDisponible() < 0) {
             throw new RuntimeException("La cantidad disponible no puede ser negativa");
         }
     }

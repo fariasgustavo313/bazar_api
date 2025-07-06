@@ -12,11 +12,11 @@ import java.util.Optional;
 @Repository
 public interface ProductoRepository extends JpaRepository<Producto,Long> {
 
-    boolean existsByNombreAndMarca(String nombre, String nombre1);
+    boolean existsByNombreAndMarca(String nombre, String marca);
 
     boolean existsByNombreAndMarcaAndIdNot(String nombre, String marca, Long id);
 
-    List<Producto> findByCantidad_disponibleLessThan(int cantidad);
+    List<Producto> findByCantidadDisponibleLessThan(int cantidadDisponible);
 
     @Query("SELECT p FROM Producto p WHERE " +
             "(:marca IS NULL OR LOWER(p.marca) = LOWER(:marca)) AND " +

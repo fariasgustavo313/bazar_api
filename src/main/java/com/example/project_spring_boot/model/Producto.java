@@ -34,7 +34,7 @@ public class Producto {
     private double costo;
 
     @Min(value = 0, message = "La cantidad disponible no puede ser negativa")
-    private int cantidad_disponible;
+    private int cantidadDisponible;
 
     @Column(name = "eliminado")
     private boolean eliminado = false;
