@@ -15,11 +15,11 @@ public class ClienteService {
     private ClienteRepository clienteRepository;
 
     public List<Cliente> obtenerClientes(){
-        return clienteRepository.findAll();
+        return clienteRepository.findAllActive();
     }
 
     public Cliente obtenerClientePorId(Long id){
-        return clienteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con ID: " + id));
+        return clienteRepository.findByIdActive(id).orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado con ID: " + id));
     }
 
     public void crearCliente(Cliente cliente){
@@ -32,10 +32,9 @@ public class ClienteService {
     }
 
     public void eliminarCliente(Long id){
-        if (!clienteRepository.existsById(id)) {
-            throw new IllegalArgumentException("No se puede eliminar. Cliente no encontrado con ID: " + id);
-        }
-        clienteRepository.deleteById(id);
+        Cliente cliente =  obtenerClientePorId(id);
+        cliente.setEliminado(true);
+        clienteRepository.save(cliente);
     }
 
     public void actualizarCliente(Long id, Cliente cliente){

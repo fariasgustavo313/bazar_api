@@ -33,4 +33,7 @@ public class Cliente {
     @Size(max = 20, message = "El DNI no puede superar los 20 caracteres")
     @Column(unique = true)
     private String dni;
+
+    @Column(name = "eliminado")
+    private boolean eliminado = false;
 }
